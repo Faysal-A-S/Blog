@@ -1,17 +1,19 @@
 import Blog from "../schemas/blog.js";
 import User from "../schemas/user.js";
 
-export const getAllBlog = async (req, res, next) => {
+export const getAllBlog = async (req, res) => {
   let blogs;
   try {
     blogs = await Blog.find().populate("user", "name");
     if (!blogs) {
       res.status(404).json({ message: "No blogs Found" });
     } else {
-      res.status(200).json({ blogs });
+      return res.status(200).json({ blogs });
     }
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    if (err) {
+      res.status(403).json({ message: err.message });
+    }
   }
 };
 export const addBlog = async (req, res, next) => {
@@ -20,13 +22,13 @@ export const addBlog = async (req, res, next) => {
   try {
     existingUser = await User.findById(user);
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    return res.status(403).json({ message: err.message });
   }
   if (!title || !description || !topic || !image || !user) {
-    res.status(403).json({ message: "Please fill all the fields" });
+    return res.status(403).json({ message: "Please fill all the fields" });
   }
   if (!existingUser) {
-    res.status(404).json({ message: "User not found" });
+    return res.status(404).json({ message: "User not found" });
   }
   try {
     const newBlog = new Blog({ title, topic, description, image, user });
@@ -35,9 +37,9 @@ export const addBlog = async (req, res, next) => {
       { _id: existingUser._id },
       { $push: { blogs: newBlog._id } }
     );
-    res.status(200).json({ newBlog });
+    return res.status(200).json({ newBlog });
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    return res.status(401).json({ message: err.message });
   }
 };
 export const updateBlog = async (req, res) => {
@@ -56,12 +58,12 @@ export const updateBlog = async (req, res) => {
         image,
         user,
       });
-      res.status(200).json({ updatedBlog });
+      return res.status(200).json({ updatedBlog });
     } else {
-      res.status(404).json({ message: "Blog not found" });
+      return res.status(404).json({ message: "Blog not found" });
     }
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    return res.status(403).json({ message: err.message });
   }
 };
 export const getBlog = async (req, res) => {
@@ -69,12 +71,12 @@ export const getBlog = async (req, res) => {
   try {
     const blog = await Blog.find({ _id: id });
     if (blog) {
-      res.status(200).json({ blog });
+      return res.status(200).json({ blog });
     } else {
-      res.status(404).json({ message: "No blog found" });
+      return res.status(404).json({ message: "No blog found" });
     }
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    return res.status(403).json({ message: err.message });
   }
 };
 export const deleteBlog = async (req, res) => {
@@ -85,12 +87,12 @@ export const deleteBlog = async (req, res) => {
     if (blog) {
       await User.updateOne({ _id: blog.user }, { $pull: { blogs: id } });
       let deletedBlog = await Blog.deleteOne({ _id: id });
-      res.status(200).json({ deletedBlog });
+      return res.status(200).json({ deletedBlog });
     } else {
-      res.status(404).json({ message: "Blog not found" });
+      return res.status(404).json({ message: "Blog not found" });
     }
   } catch (err) {
-    res.status(403).json({ message: err.message });
+    return res.status(403).json({ message: err.message });
   }
 };
 
@@ -101,11 +103,11 @@ export const getMyBlogs = async (req, res) => {
   try {
     blogs = await Blog.find({ user: user_id }).populate("user", "name");
     if (!blogs) {
-      res.status(404).json({ message: "No blogs Found" });
+      return res.status(404).json({ message: "No blogs Found" });
     }
-    res.status(200).json({ blogs });
+    return res.status(200).json({ blogs });
   } catch (err) {
-    res.status(401).json({ message: "err.message" });
+    return res.status(401).json({ message: "err.message" });
   }
 };
 

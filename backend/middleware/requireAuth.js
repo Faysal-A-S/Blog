@@ -5,7 +5,7 @@ const requireAuth = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    res.status(401).json({ message: "Auth token required" });
+    return res.status(401).json({ message: "Auth token required" });
   }
 
   try {
@@ -15,7 +15,7 @@ const requireAuth = async (req, res, next) => {
     req.user = await User.findOne({ _id: id }).select("_id");
     next();
   } catch (err) {
-    res.status(401).json({ message: err.message });
+    return res.status(401).json({ message: err.message });
   }
 };
 
