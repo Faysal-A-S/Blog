@@ -10,16 +10,7 @@ const Blogs = () => {
     content = <p>{error?.data}</p>;
   }
   if (isLoading) {
-    content = (
-      <div className="d-flex align-items-center">
-        <strong>Loading...</strong>
-        <div
-          className="spinner-border ms-auto"
-          role="status"
-          aria-hidden="true"
-        ></div>
-      </div>
-    );
+    content = <div class="loader">Loading...</div>;
   }
   if (data?.blogs?.length === 0) {
     content = <h3>No blogs found....</h3>;

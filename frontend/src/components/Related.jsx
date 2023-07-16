@@ -11,16 +11,7 @@ const Related = () => {
     content = <p>{error?.data}</p>;
   }
   if (isLoading) {
-    content = (
-      <div className="d-flex align-items-center">
-        <strong>Loading...</strong>
-        <div
-          className="spinner-border ms-auto"
-          role="status"
-          aria-hidden="true"
-        ></div>
-      </div>
-    );
+    content = content = <div class="loader">Loading...</div>;
   }
   if (data?.related?.length === 0) {
     content = <p>No related post for this blog</p>;

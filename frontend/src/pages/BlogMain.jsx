@@ -10,16 +10,7 @@ const BlogMain = () => {
   const { data, isLoading, error, isError } = useGetOneBlogQuery(id);
   let content;
   if (isLoading) {
-    content = (
-      <div className="d-flex align-items-center">
-        <strong>Loading...</strong>
-        <div
-          className="spinner-border ms-auto"
-          role="status"
-          aria-hidden="true"
-        ></div>
-      </div>
-    );
+    content = content = <div class="loader">Loading...</div>;
   }
   if (isError) {
     content = <p>{error?.data}</p>;
