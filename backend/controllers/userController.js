@@ -1,3 +1,4 @@
+import generateToken from "../config/generateToken.js";
 import User from "../schemas/user.js";
 import bcrypt from "bcryptjs";
 export const getUsers = async (req, res) => {
@@ -28,7 +29,12 @@ export const registerUser = async (req, res, next) => {
         blogs: [],
       });
       await newUser.save();
-      return res.status(201).json({ message: "User created!" });
+      return res.status(201).json({
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        token: generateToken(newUser._id),
+      });
     } catch (err) {
       return res.status(403).json({ message: err.message });
     }
@@ -47,7 +53,12 @@ export const loginUser = async (req, res, next) => {
         existingUser.password
       );
       if (isCorrectPassword) {
-        return res.status(200).json({ message: "User logged in" });
+        return res.status(200).json({
+          _id: existingUser._id,
+          name: existingUser.name,
+          email: existingUser.email,
+          token: generateToken(existingUser._id),
+        });
       }
       return res.status(401).json({ message: "Incorrect email or password" });
     }
